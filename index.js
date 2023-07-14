@@ -1,32 +1,40 @@
 const puppeteer = require('puppeteer');
 
+const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
 async function run()  {
 
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(2*60*1000);
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
 
-  await page.goto('https://steamcommunity.com/market/');
+//   await page.goto('https://steamcommunity.com/market/');
 
-  const itemData = await page.evaluate(() => {
-    const items = Array.from(document.querySelectorAll('.market_listing_row_link'));
-    const data = items.map(item => {
-        const titleElement = item.querySelector('.market_listing_item_name').textContent;
-        const priceElement = item.querySelector('.sale_price').textContent;//can be also .normal_price or full block .market_table_value .normal_price
-        return titleElement;
-        // return {
-        //     name: titleElement
-        // };
-    });
-    return data;
-  });
+  while (true){
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    page.setDefaultNavigationTimeout(2*60*1000);
+    await page.goto('https://steamcommunity.com/market/search?q=#p1_popular_desc');
+    // await page.goto('https://steamcommunity.com/market/search?q=#p'+i+'_popular_desc');
+    // console.log('https://steamcommunity.com/market/search?q=#p'+i+'_popular_desc');
+    const itemData = await page.evaluate(() => {
+        const items = Array.from(document.querySelectorAll('.market_listing_row_link'));
+        const data = items.map(item => {
+            const titleElement = item.querySelector('.market_listing_item_name').textContent;
+            const priceElement = item.querySelector('.sale_price').textContent;//can be also .normal_price or full block .market_table_value .normal_price
+            return {
+                name: titleElement,
+                price: priceElement
+            };
+        });
+        return data;
+      });
+      console.log(itemData);
+      await browser.close();
+      await delay(10000);
+  }
 
-  console.log(itemData);
-  console.log("done1");
-  await browser.close();
-  const targetElement = document.querySelector('.item-name-1');
-  targetElement.innerHTML = itemData;
 
+  
   // Print the extracted data
 
 
