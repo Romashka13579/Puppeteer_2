@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const ExcelJS = require('exceljs');
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
