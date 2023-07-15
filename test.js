@@ -1,14 +1,55 @@
-// var i = 1;                  //  set your counter to 1
+const ExcelJS = require('exceljs');
 
-// function myLoop() { 
-//     console.log("a");        //  create a loop function
-//   setTimeout(function() {   //  call a 3s setTimeout when the loop is called
-//     console.log('hello');   //  your code here
-//     i++;                    //  increment the counter
-//     if (i < 10) {           //  if the counter < 10, call the loop function
-//       myLoop();             //  ..  again which will trigger another 
-//     }                       //  ..  setTimeout()
-//   }, 3000)
+try {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet 1');
+    worksheet.state = 'visible';
+    const cell = worksheet.getCell('A1'); 
+    
+    cell.value = 'Updated Value';
+    workbook.xlsx.writeFile('scraped_data.xlsx')
+      .then(() => {
+        console.log('Data saved to Excel file.');
+      })
+      .catch((error) => {
+        console.error('Error saving data to Excel file:', error);
+      });
+
+}
+catch (error) {
+    console.error('Error opening Excel file:', error);
+}
+
+// function myLoop() {
+//     setTimeout(function () {
+//         try {
+//             const workbook = new ExcelJS.Workbook();
+//             workbook.xlsx.readFile('Scraper.xlsx');
+
+//             const sheet = workbook.getWorksheet(1);
+
+//             if (sheet) {
+//                 const cell = sheet.getCell('A1');
+
+//                 cell.value = 'Updated Value';
+
+//                 workbook.xlsx.writeFile('Scraper.xlsx');
+
+//                 console.log('Cell updated successfully.');
+//                 workbook.
+//             } else {
+//                 console.error('Worksheet not found.');
+//             }
+
+//         }
+//         catch (error) {
+//             console.error('Error opening Excel file:', error);
+//         }
+//         if (true) {
+//             console.log("ae");
+//             myLoop();
+//         }
+//     }, 10000);
 // }
 
-// myLoop();   
+// myLoop();
