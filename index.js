@@ -28,7 +28,7 @@ async function run() {
         price: priceElement
       };
     });
-    return data[0];
+    return data;
   });
   console.log(itemData);
   await browser.close();
@@ -71,9 +71,11 @@ function myLoop() {
        
       try {
         worksheet.state = 'visible';
-        const cell = worksheet.getCell('A'+i+'');
-
-        cell.value = data;
+        worksheet.getCell('A1').value = data[0];
+        worksheet.getCell('A2').value = data[1];
+        worksheet.getCell('A3').value = data[2];
+        worksheet.getCell('A4').value = data[3];
+        worksheet.getCell('A5').value = data[4];
         workbook.xlsx.writeFile('scraped_data.xlsx')
           .then(() => {
             console.log('Data saved to Excel file.');
@@ -122,7 +124,7 @@ function myLoop() {
       // }).catch((error) => {
       //   console.error('Error scraping data:', error);
     });
-    if (i<7) {      // true
+    if (true) {      // i<6
       myLoop();
       i++;
     }
