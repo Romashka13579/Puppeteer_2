@@ -22,14 +22,15 @@ async function run() {
       const data = items.map(item => {
         const titleElement = item.querySelector('.market_listing_item_name').textContent;
         const priceElement = item.querySelector('.sale_price').textContent;//can be also .normal_price or full block .market_table_value .normal_price
-        return {
-          name: titleElement,
-          price: priceElement
-        };
+        return titleElement;
+        // return {
+        //   name: titleElement,
+        //   price: priceElement
+        // };
       });
       return data;
     });
-    console.log(itemData);
+    console.log(itemData[0]);
     await browser.close();
     await delay(10000);
     return itemData;
@@ -62,32 +63,30 @@ async function run() {
 
 
 function myLoop() { 
-  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+  setTimeout(function() {
     run().then((data) => {
-      // Iterate over the scraped data and add it to the worksheet
     
     
       try {
-        // Process the scraped data and save it to Excel
         const workbook = new ExcelJS.Workbook();
         workbook.xlsx.readFile('Scraper.xlsx');
+
+        const sheet = workbook.addWorksheet('My Sheet');
     
-        // Access the worksheets in the Excel file
-        // const worksheet = workbook.getWorksheet('Sheet1'); // Replace 'Sheet1' with the actual sheet name
+        if (sheet) {
+          const cell = sheet.getCell('A1');
     
-        // if (worksheet) {
-        //   const cell = worksheet.getCell('A1'); // Replace 'A1' with the desired cell reference
+          cell.value = 'Updated Value';
     
-        //   cell.value = 'Updated Value'; // Assign the new value to the cell
+          workbook.xlsx.writeFile('Scraper.xlsx');
     
-        //   workbook.xlsx.writeFile('Scraper.xlsx');
+          console.log('Cell updated successfully.');
+        } else {
+          console.error('Worksheet not found.');
+        }
     
-        //   console.log('Cell updated successfully.');
-        // } else {
-        //   console.error('Worksheet not found.');
-        // }
-    
-      } catch (error) {
+      } 
+      catch (error) {
         console.error('Error opening Excel file:', error);
       }
     
@@ -103,9 +102,9 @@ function myLoop() {
       // }).catch((error) => {
       //   console.error('Error scraping data:', error);
     });
-  if (true) {     
-    myLoop();             //  ..  again which will trigger another 
-  }                       //  ..  setTimeout()
+  if (true) {      // true
+    myLoop();
+  } 
 }, 10000);
 }
 
