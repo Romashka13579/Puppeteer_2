@@ -10,7 +10,7 @@ async function run() {
 
   //   await page.goto('https://steamcommunity.com/market/');
 
-  for (i = 0; i < 1; i++) {
+  // for (i = 0; i < 1; i++) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(2 * 60 * 1000);
@@ -33,7 +33,7 @@ async function run() {
     await browser.close();
     await delay(10000);
     return itemData;
-  }
+  // }
 
 
 
@@ -57,51 +57,56 @@ async function run() {
   //     const
   // })
 }
-function loop(){
-  setTimeout(function(){
-    console.log("1");
-  }, 3000)
+
+
+
+
+function myLoop() { 
+  setTimeout(function() {   //  call a 3s setTimeout when the loop is called
+    run().then((data) => {
+      // Iterate over the scraped data and add it to the worksheet
+    
+    
+      try {
+        // Process the scraped data and save it to Excel
+        const workbook = new ExcelJS.Workbook();
+        workbook.xlsx.readFile('Scraper.xlsx');
+    
+        // Access the worksheets in the Excel file
+        // const worksheet = workbook.getWorksheet('Sheet1'); // Replace 'Sheet1' with the actual sheet name
+    
+        // if (worksheet) {
+        //   const cell = worksheet.getCell('A1'); // Replace 'A1' with the desired cell reference
+    
+        //   cell.value = 'Updated Value'; // Assign the new value to the cell
+    
+        //   workbook.xlsx.writeFile('Scraper.xlsx');
+    
+        //   console.log('Cell updated successfully.');
+        // } else {
+        //   console.error('Worksheet not found.');
+        // }
+    
+      } catch (error) {
+        console.error('Error opening Excel file:', error);
+      }
+    
+    
+      //   // Save the workbook to a file
+      //   workbook.xlsx.writeFile('scraped_data.xlsx')
+      //     .then(() => {
+      //       console.log('Data saved to Excel file.');
+      //     })
+      //     .catch((error) => {
+      //       console.error('Error saving data to Excel file:', error);
+      //     });
+      // }).catch((error) => {
+      //   console.error('Error scraping data:', error);
+    });
+  if (true) {     
+    myLoop();             //  ..  again which will trigger another 
+  }                       //  ..  setTimeout()
+}, 10000);
 }
-for(var start = 1; start < 10; start++) {
-  loop();
-  run().then((data) => {
-    // Iterate over the scraped data and add it to the worksheet
-  
-  
-    try {
-      // Process the scraped data and save it to Excel
-      const workbook = new ExcelJS.Workbook();
-      workbook.xlsx.readFile('Scraper.xlsx');
-  
-      // Access the worksheets in the Excel file
-      // const worksheet = workbook.getWorksheet('Sheet1'); // Replace 'Sheet1' with the actual sheet name
-  
-      // if (worksheet) {
-      //   const cell = worksheet.getCell('A1'); // Replace 'A1' with the desired cell reference
-  
-      //   cell.value = 'Updated Value'; // Assign the new value to the cell
-  
-      //   workbook.xlsx.writeFile('Scraper.xlsx');
-  
-      //   console.log('Cell updated successfully.');
-      // } else {
-      //   console.error('Worksheet not found.');
-      // }
-  
-    } catch (error) {
-      console.error('Error opening Excel file:', error);
-    }
-  
-  
-    //   // Save the workbook to a file
-    //   workbook.xlsx.writeFile('scraped_data.xlsx')
-    //     .then(() => {
-    //       console.log('Data saved to Excel file.');
-    //     })
-    //     .catch((error) => {
-    //       console.error('Error saving data to Excel file:', error);
-    //     });
-    // }).catch((error) => {
-    //   console.error('Error scraping data:', error);
-  });
-}
+
+myLoop();   
