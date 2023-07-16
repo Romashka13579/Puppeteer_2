@@ -65,7 +65,24 @@ const worksheet = workbook.addWorksheet('sheet', {properties:{tabColor:{argb:'FF
 
 worksheet.properties.defaultRowHeight = 50;
 worksheet.properties.defaultColWidth = 10;
+// worksheet.autoFilter = 'A1:C1';
+worksheet.autoFilter = {
+    from: 'A1',
+    to: 'C1',
+  }
 
+  const nameCol = worksheet.getColumn('B');
+  
+  nameCol.width = 15;
+//   nameCol.eachCell({ includeEmpty: true }, function(cell, rowNumber) {
+//     cell
+//   });
+const row = worksheet.getRow(5);
+row.height = 70;
+row.getCell(1).value = 5; 
+worksheet.getCell('A1').value = 'One';
+worksheet.getCell('A2').value = 'Two';
+worksheet.getCell('A3').value = 'Three';
 worksheet.getCell('A4').value = 'Four';
 
 workbook.xlsx.writeFile("scraped_data_test.xlsx");
