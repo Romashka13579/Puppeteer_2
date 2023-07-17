@@ -80,15 +80,18 @@ worksheet.autoFilter = {
 const row = worksheet.getRow(5);
 row.height = 70;
 row.getCell(1).value = 5; 
-worksheet.getCell('A1').value = 'OneOneOneOne';
 worksheet.getCell('A2').value = 'Two';
 worksheet.getCell('A3').value = 'Three';
 worksheet.getCell('A4').value = 'Four';
 worksheet.getCell('A5').alignment = { vertical: 'middle', horizontal: 'center' };
-const imageId1 = workbook.addImage({
-  filename: 'path/to/image.jpg',
-  extension: 'png',
-});
+// const imageId1 = workbook.addImage({
+//   filename: 'path/to/image.jpg',
+//   extension: 'png',
+// });
+const text = "OneOneOneOne"
+worksheet.getCell('A1').value = text;
+worksheet.properties.defaultColWidth = text.length * 1.5;
+
 workbook.xlsx.writeFile("scraped_data_test.xlsx");
 // workbook.xlsx.writeFile("Scraper.xlsx");
 
