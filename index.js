@@ -4,10 +4,10 @@ const ExcelJS = require('exceljs');
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 const LinksArray = [
-  'https://steamcommunity.com/market/listings/730/Paris%202023%20Challengers%20Sticker%20Capsule',
-  // 'https://steamcommunity.com/market/listings/730/Paris%202023%20Contenders%20Sticker%20Capsule',
-  // 'https://steamcommunity.com/market/listings/730/Paris%202023%20Legends%20Sticker%20Capsule',
-  // 'https://steamcommunity.com/market/listings/730/Dreams%20%26%20Nightmares%20Case',
+  'https://steamcommunity.com/market/search?q=sticker+Contenders+paris',
+  // 'https://steamcommunity.com/market/search?q=sticker+Legends+paris',
+  // 'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
+  // 'https://steamcommunity.com/market/search?q=Dreams+and+nightmares+case',
 ];
 
 async function run() {
@@ -19,12 +19,11 @@ async function run() {
     page.setDefaultNavigationTimeout(2 * 60 * 1000);
     await page.goto(LinksArray[i-1]);
     const itemData = await page.evaluate(() => {
-      const name = document.querySelector('.hover_item_name');
+      const name = document.querySelector('.market_listing_item_name');
       const itemName = name.textContent;
-      const price = document.querySelectorAll('.market_commodity_orders_header_promote');
-      console.log(price);
+      // const price = document.querySelectorAll('.normal_price');
       // const itemPrice = price[1].textContent;
-      return [itemName, itemName, itemName, itemName];
+      return [itemName, itemName];
     });
     console.log(itemData);
     await browser.close();
