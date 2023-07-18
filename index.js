@@ -5,29 +5,31 @@ const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, mil
 
 const LinksArray = [
   'https://steamcommunity.com/market/search?q=sticker+Contenders+paris',
-  // 'https://steamcommunity.com/market/search?q=sticker+Legends+paris',
-  // 'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
-  // 'https://steamcommunity.com/market/search?q=Dreams+and+nightmares+case',
+  'https://steamcommunity.com/market/search?q=sticker+Legends+paris',
+  'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
+  'https://steamcommunity.com/market/search?q=Dreams+and+nightmares+case',
 ];
 
 async function run() {
   const itemsName = [];
   const itemsPrice = [];
-  for (i = 0; i <= LinksArray.length; i++) {
+  for (j = 0; j < LinksArray.length; j++) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    page.setDefaultNavigationTimeout(2 * 60 * 1000);
-    await page.goto(LinksArray[i-1]);
+    // page.setDefaultNavigationTimeout(2 * 60 * 1000);
+    await page.goto(LinksArray[j]);
     const itemData = await page.evaluate(() => {
       const name = document.querySelector('.market_listing_item_name');
       const itemName = name.textContent;
-      // const price = document.querySelectorAll('.normal_price');
-      // const itemPrice = price[1].textContent;
-      return [itemName, itemName];
+      const price = document.querySelectorAll('.normal_price');
+      const itemPrice = price[1].textContent;
+      return [itemName, itemPrice];
     });
     console.log(itemData);
     await browser.close();
-    return itemData;
+    console.log(j);
+    itemsName.push(itemData[0]);
+    itemsPrice.push(itemData[1]);
     // const browser = await puppeteer.launch();
     // const page = await browser.newPage();
     // page.setDefaultNavigationTimeout(2 * 60 * 1000);
@@ -48,6 +50,7 @@ async function run() {
     // await browser.close();
     // return itemData;
   }
+  return [itemsName, itemsPrice];
 }
 
 
@@ -62,10 +65,10 @@ function myLoop() {
 
       try {
         worksheet.state = 'visible';
-        worksheet.getCell('A1').value = data[0];
-        worksheet.getCell('A2').value = data[1];
-        worksheet.getCell('A3').value = data[2];
-        worksheet.getCell('A4').value = data[3];
+        worksheet.getCell('A1').value = data[0][0];
+        worksheet.getCell('A2').value = data[0][1];
+        worksheet.getCell('A3').value = data[0][2];
+        worksheet.getCell('A4').value = data[0][3];
         workbook.xlsx.writeFile('scraped_data.xlsx')
           .then(() => {
             console.log('Data saved to Excel file.');
@@ -83,7 +86,7 @@ function myLoop() {
       myLoop();
       i++;
     }
-  }, 8000);
+  }, 20000);
 }
 
 myLoop();   
