@@ -6,50 +6,45 @@ const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, mil
 const LinksArray = [
   'https://steamcommunity.com/market/search?q=sticker+Contenders+paris',
   'https://steamcommunity.com/market/search?q=sticker+Legends+paris',
-  'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
+  // 'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
   'https://steamcommunity.com/market/search?q=Dreams+and+nightmares+case',
 ];
 
 async function run() {
   const itemsName = [];
   const itemsPrice = [];
-  for (j = 0; j < LinksArray.length; j++) {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    // page.setDefaultNavigationTimeout(2 * 60 * 1000);
-    await page.goto(LinksArray[j]);
-    const itemData = await page.evaluate(() => {
-      const name = document.querySelector('.market_listing_item_name');
-      const itemName = name.textContent;
-      const price = document.querySelectorAll('.normal_price');
-      const itemPrice = price[1].textContent;
-      return [itemName, itemPrice];
-    });
-    console.log(itemData);
-    await browser.close();
-    console.log(j);
-    itemsName.push(itemData[0]);
-    itemsPrice.push(itemData[1]);
-    // const browser = await puppeteer.launch();
-    // const page = await browser.newPage();
-    // page.setDefaultNavigationTimeout(2 * 60 * 1000);
-    // await page.goto('https://steamcommunity.com/market/search?q=#p1_popular_desc');
-    // const itemData = await page.evaluate(() => {
-    //   const items = Array.from(document.querySelectorAll('.market_listing_row_link'));
-    //   const data = items.map(item => {
-    //     const titleElement = item.querySelector('.market_listing_item_name').textContent;
-    //     const priceElement = item.querySelector('.sale_price').textContent;//can be also .normal_price or full block .market_table_value .normal_price
-    //     return {
-    //       name: titleElement,
-    //       price: priceElement
-    //     };
-    //   });
-    //   return data;
-    // });
-    // console.log(itemData);
-    // await browser.close();
-    // return itemData;
-  }
+  // for (j = 0; j < LinksArray.length; j++) {
+
+  // data = scratching(LinksArray[j], itemsName, itemsPrice);
+  // }
+  // return data;
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(2 * 60 * 1000);
+  await page.goto('https://steamcommunity.com/market/search?q=sticker+Contenders+paris');
+  const itemData = await page.evaluate(() => {
+    const name = document.querySelector('.market_listing_item_name');
+    var itemName = name.textContent;
+    const price = document.querySelectorAll('.normal_price');
+    var itemPrice = price[1].textContent;
+    return [itemName, itemPrice];
+  });
+  itemsName.push(itemData[0]);
+  itemsPrice.push(itemData[1]);
+  const page1 = await browser.newPage();
+  page1.setDefaultNavigationTimeout(2 * 60 * 1000);
+  await page1.goto('https://steamcommunity.com/market/search?q=sticker+Legends+paris');
+  const itemData1 = await page1.evaluate(() => {
+    const name = document.querySelector('.market_listing_item_name');
+    var itemName = name.textContent;
+    const price = document.querySelectorAll('.normal_price');
+    var itemPrice = price[1].textContent;
+    return [itemName, itemPrice];
+  });
+  itemsName.push(itemData1[0]);
+  itemsPrice.push(itemData1[1]);
+  await browser.close();
+  console.log(itemsName, itemsPrice);
   return [itemsName, itemsPrice];
 }
 
@@ -61,8 +56,6 @@ const worksheet = workbook.addWorksheet('Sheet 1');
 function myLoop() {
   setTimeout(function () {
     run().then((data) => {
-
-
       try {
         worksheet.state = 'visible';
         worksheet.getCell('A1').value = data[0][0];
@@ -89,4 +82,24 @@ function myLoop() {
   }, 20000);
 }
 
-myLoop();   
+myLoop();
+
+async function scratching(link, itemsName, itemsPrice) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(2 * 60 * 1000);
+  await page.goto(link);
+  const itemData = await page.evaluate(() => {
+    const name = document.querySelector('.market_listing_item_name');
+    var itemName = name.textContent;
+    const price = document.querySelectorAll('.normal_price');
+    var itemPrice = price[1].textContent;
+    return [itemName, itemPrice];
+  });
+  console.log(itemData);
+  console.log(j);
+  itemsName.push(itemData[0]);
+  itemsPrice.push(itemData[1]);
+  await browser.close();
+  return [itemsName, itemsPrice];
+}
