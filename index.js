@@ -58,13 +58,13 @@ async function run() {
   page.setDefaultNavigationTimeout(2 * 60 * 1000);
   await page.goto('https://steamcommunity.com/market/search?q=sticker+Contenders+paris');
   const itemData = await page.evaluate(() => {
-    if(document.querySelector('.market_listing_item_name')){
+    if (document.querySelector('.market_listing_item_name')) {
       const name = document.querySelector('.market_listing_item_name');
       var itemName = name.textContent;
     }
-    if(document.querySelectorAll('.normal_price')){
+    if (document.querySelectorAll('.normal_price')) {
       const price = document.querySelectorAll('.normal_price');
-      if(price[1]){
+      if (price[1]) {
         var itemPrice = price[1].textContent;
       }
     }
@@ -88,10 +88,16 @@ function myLoop() {
     run().then((data) => {
       try {
         worksheet.state = 'visible';
-        worksheet.getCell('A1').value = data[0][0];
-        worksheet.getCell('A2').value = data[0][1];
-        worksheet.getCell('A3').value = data[0][2];
-        worksheet.getCell('A4').value = data[0][3];
+        for (i = 0; i < data.length; i++) {
+          for (j = 0; j < data[i].length; j++) {
+            const row = worksheet.getRow(j+1);
+            const cell = row.getCell(i+1);
+            cell.value = data[i][j];
+          }
+        }
+        // worksheet.getCell('A2').value = data[0][1];
+        // worksheet.getCell('A3').value = data[0][2];
+        // worksheet.getCell('A4').value = data[0][3];
         workbook.xlsx.writeFile('scraped_data.xlsx')
           .then(() => {
             console.log('Data saved to Excel file.');

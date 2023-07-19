@@ -78,6 +78,8 @@ worksheet.autoFilter = {
 //     cell
 //   });
 const row = worksheet.getRow(5);
+const cell = row.getCell(5);
+cell.value = 'Two';
 row.height = 70;
 row.getCell(1).value = 5; 
 worksheet.getCell('A2').value = 'Two';
