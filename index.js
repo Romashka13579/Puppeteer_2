@@ -106,20 +106,37 @@ async function run() {
 var index = 1;
 const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet('Sheet 1');
+worksheet.getCell('B1').value = "Items";
+worksheet.getCell('C1').value = "Prices";
+worksheet.getColumn.width = 5;
 function myLoop() {
   setTimeout(function () {
     run().then((data) => {
       try {
-        worksheet.state = 'visible';
-        for (i = 0; i < data.length; i++) {
-          for (j = 0; j < data[i].length; j++) {
-            if(data[i][j]){
-              const row = worksheet.getRow(j + 2);
-              const cell = row.getCell(i + 1);
-              cell.value = data[i][j];
+        data.forEach((row, rowIndex) => {
+          row.forEach((value, colIndex) => {
+            const cell = worksheet.getCell(colIndex + 2, rowIndex + 2);
+            if(value){
+              cell.value = value;
             }
-          }
-        }
+            if(rowIndex == 0){
+              worksheet.getCell(colIndex + 2, rowIndex + 1).fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF0000' }
+              }
+            }
+          });
+        });
+        // for (i = 0; i < data.length; i++) {
+        //   for (j = 0; j < data[i].length; j++) {
+        //     if(data[i][j]){
+        //       const row = worksheet.getRow(j + 2);
+        //       const cell = row.getCell(i + 2);
+        //       cell.value = data[i][j];
+        //     }
+        //   }
+        // }
         workbook.xlsx.writeFile('scraped_data.xlsx')
           .then(() => {
             console.log('Data saved to Excel file.');
@@ -142,25 +159,25 @@ function myLoop() {
 
 myLoop();
 
-async function scratching(link) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(2 * 60 * 1000);
-  await page.goto(link);
-  const itemData = await page.evaluate(() => {
-    if (document.querySelector('.market_listing_item_name')) {
-      const name = document.querySelector('.market_listing_item_name');
-      var itemName = name.textContent;
-    }
-    if (document.querySelectorAll('.normal_price')) {
-      const price = document.querySelectorAll('.normal_price');
-      if (price[1]) {
-        var itemPrice = price[1].textContent;
-      }
-    }
-    return [itemName, itemPrice];
-  });
-  console.log(itemData);
-  await browser.close();
-  return itemData;
-}
+// async function scratching(link) {
+//   const browser = await puppeteer.launch();
+//   const page = await browser.newPage();
+//   page.setDefaultNavigationTimeout(2 * 60 * 1000);
+//   await page.goto(link);
+//   const itemData = await page.evaluate(() => {
+//     if (document.querySelector('.market_listing_item_name')) {
+//       const name = document.querySelector('.market_listing_item_name');
+//       var itemName = name.textContent;
+//     }
+//     if (document.querySelectorAll('.normal_price')) {
+//       const price = document.querySelectorAll('.normal_price');
+//       if (price[1]) {
+//         var itemPrice = price[1].textContent;
+//       }
+//     }
+//     return [itemName, itemPrice];
+//   });
+//   console.log(itemData);
+//   await browser.close();
+//   return itemData;
+// }
