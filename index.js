@@ -10,10 +10,10 @@ const LinksArray = [
   'https://steamcommunity.com/market/search?q=Dreams+and+nightmares+case',
 ];
 
-const itemsName = [];
-const itemsPrice = [];
-
 async function run() {
+
+  const itemsName = [];
+  const itemsPrice = [];
 
   const browser = await puppeteer.launch();
   for (j = 0; j < LinksArray.length; j++) {
@@ -103,7 +103,7 @@ async function run() {
 
 
 
-var i = 1;
+var index = 1;
 const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet('Sheet 1');
 function myLoop() {
@@ -131,9 +131,9 @@ function myLoop() {
         console.error('Error opening Excel file:', error);
       }
     });
-    if (true) {      // i<6
+    if (true) {      // index<6
       myLoop();
-      i++;
+      index++;
     }
   }, 20000);
 }
