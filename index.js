@@ -15,11 +15,11 @@ async function run() {
   const itemsName = [];
   const itemsPrice = [];
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: true });
   for (j = 0; j < LinksArray.length; j++) {
     const page = await browser.newPage();
     page.setDefaultNavigationTimeout(2 * 60 * 1000);
-    await page.goto(LinksArray[j]);
+    await page.goto(LinksArray[j], { waitUntil: 'domcontentloaded' });
     const itemData = await page.evaluate(() => {
       if (document.querySelector('.market_listing_item_name')) {
         const name = document.querySelector('.market_listing_item_name');
@@ -113,9 +113,11 @@ function myLoop() {
         worksheet.state = 'visible';
         for (i = 0; i < data.length; i++) {
           for (j = 0; j < data[i].length; j++) {
-            const row = worksheet.getRow(j + 2);
-            const cell = row.getCell(i + 1);
-            cell.value = data[i][j];
+            if(data[i][j]){
+              const row = worksheet.getRow(j + 2);
+              const cell = row.getCell(i + 1);
+              cell.value = data[i][j];
+            }
           }
         }
         workbook.xlsx.writeFile('scraped_data.xlsx')
