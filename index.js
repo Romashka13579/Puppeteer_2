@@ -15,12 +15,29 @@ const itemsPrice = [];
 
 async function run() {
 
-
+  const browser = await puppeteer.launch();
   for (j = 0; j < LinksArray.length; j++) {
-    data = scratching(LinksArray[j]);
-    itemsName.push(data[0]);
-    itemsPrice.push(data[1]);
+    const page = await browser.newPage();
+    page.setDefaultNavigationTimeout(2 * 60 * 1000);
+    await page.goto(LinksArray[j]);
+    const itemData = await page.evaluate(() => {
+      if (document.querySelector('.market_listing_item_name')) {
+        const name = document.querySelector('.market_listing_item_name');
+        var itemName = name.textContent;
+      }
+      if (document.querySelectorAll('.normal_price')) {
+        const price = document.querySelectorAll('.normal_price');
+        if (price[1]) {
+          var itemPrice = price[1].textContent;
+        }
+      }
+      return [itemName, itemPrice];
+    });
+    console.log(itemData);
+    itemsName.push(itemData[0]);
+    itemsPrice.push(itemData[1]);
   }
+  await browser.close();
   return [itemsName, itemsPrice];
 
 
