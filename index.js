@@ -6,19 +6,22 @@ const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, mil
 const LinksArray = [
   'https://steamcommunity.com/market/search?q=sticker+Contenders+paris',
   'https://steamcommunity.com/market/search?q=sticker+Legends+paris',
-  // 'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
+  'https://steamcommunity.com/market/search?q=Challengers+Paris+stickers',
   'https://steamcommunity.com/market/search?q=Dreams+and+nightmares+case',
 ];
 
+const itemsName = [];
+const itemsPrice = [];
+
 async function run() {
-  const itemsName = [];
-  const itemsPrice = [];
 
 
-  // for (j = 0; j < LinksArray.length; j++) {
-  // data = scratching(LinksArray[j], itemsName, itemsPrice);
-  // }
-  // return data;
+  for (j = 0; j < LinksArray.length; j++) {
+    data = scratching(LinksArray[j]);
+    itemsName.push(data[0]);
+    itemsPrice.push(data[1]);
+  }
+  return [itemsName, itemsPrice];
 
 
   // const browser = await puppeteer.launch();
@@ -53,29 +56,32 @@ async function run() {
   // await browser.close();
   // console.log(itemsName, itemsPrice);
   // return [itemsName, itemsPrice];
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(2 * 60 * 1000);
-  await page.goto('https://steamcommunity.com/market/search?q=sticker+Contenders+paris');
-  const itemData = await page.evaluate(() => {
-    if (document.querySelector('.market_listing_item_name')) {
-      const name = document.querySelector('.market_listing_item_name');
-      var itemName = name.textContent;
-    }
-    if (document.querySelectorAll('.normal_price')) {
-      const price = document.querySelectorAll('.normal_price');
-      if (price[1]) {
-        var itemPrice = price[1].textContent;
-      }
-    }
-    return [itemName, itemPrice];
-  });
-  console.log(itemData);
 
-  itemsName.push(itemData[0]);
-  itemsPrice.push(itemData[1]);
-  await browser.close();
-  return [itemsName, itemsPrice];
+
+
+  // const browser = await puppeteer.launch();
+  // const page = await browser.newPage();
+  // page.setDefaultNavigationTimeout(2 * 60 * 1000);
+  // await page.goto('https://steamcommunity.com/market/search?q=sticker+Contenders+paris');
+  // const itemData = await page.evaluate(() => {
+  //   if (document.querySelector('.market_listing_item_name')) {
+  //     const name = document.querySelector('.market_listing_item_name');
+  //     var itemName = name.textContent;
+  //   }
+  //   if (document.querySelectorAll('.normal_price')) {
+  //     const price = document.querySelectorAll('.normal_price');
+  //     if (price[1]) {
+  //       var itemPrice = price[1].textContent;
+  //     }
+  //   }
+  //   return [itemName, itemPrice];
+  // });
+  // console.log(itemData);
+
+  // itemsName.push(itemData[0]);
+  // itemsPrice.push(itemData[1]);
+  // await browser.close();
+  // return [itemsName, itemsPrice];
 }
 
 
@@ -90,14 +96,11 @@ function myLoop() {
         worksheet.state = 'visible';
         for (i = 0; i < data.length; i++) {
           for (j = 0; j < data[i].length; j++) {
-            const row = worksheet.getRow(j+1);
-            const cell = row.getCell(i+1);
+            const row = worksheet.getRow(j + 2);
+            const cell = row.getCell(i + 1);
             cell.value = data[i][j];
           }
         }
-        // worksheet.getCell('A2').value = data[0][1];
-        // worksheet.getCell('A3').value = data[0][2];
-        // worksheet.getCell('A4').value = data[0][3];
         workbook.xlsx.writeFile('scraped_data.xlsx')
           .then(() => {
             console.log('Data saved to Excel file.');
@@ -120,22 +123,25 @@ function myLoop() {
 
 myLoop();
 
-async function scratching(link, itemsName, itemsPrice) {
+async function scratching(link) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(2 * 60 * 1000);
   await page.goto(link);
   const itemData = await page.evaluate(() => {
-    const name = document.querySelector('.market_listing_item_name');
-    var itemName = name.textContent;
-    const price = document.querySelectorAll('.normal_price');
-    var itemPrice = price[1].textContent;
+    if (document.querySelector('.market_listing_item_name')) {
+      const name = document.querySelector('.market_listing_item_name');
+      var itemName = name.textContent;
+    }
+    if (document.querySelectorAll('.normal_price')) {
+      const price = document.querySelectorAll('.normal_price');
+      if (price[1]) {
+        var itemPrice = price[1].textContent;
+      }
+    }
     return [itemName, itemPrice];
   });
   console.log(itemData);
-  console.log(j);
-  itemsName.push(itemData[0]);
-  itemsPrice.push(itemData[1]);
   await browser.close();
-  return [itemsName, itemsPrice];
+  return itemData;
 }
