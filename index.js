@@ -13,38 +13,68 @@ const LinksArray = [
 async function run() {
   const itemsName = [];
   const itemsPrice = [];
-  // for (j = 0; j < LinksArray.length; j++) {
 
+
+  // for (j = 0; j < LinksArray.length; j++) {
   // data = scratching(LinksArray[j], itemsName, itemsPrice);
   // }
   // return data;
+
+
+  // const browser = await puppeteer.launch();
+  // const page = await browser.newPage();
+  // page.setDefaultNavigationTimeout(2 * 60 * 1000);
+  // await page.goto('https://steamcommunity.com/market/search?q=sticker+Contenders+paris', { waitUntil: 'domcontentloaded' });
+  // const itemData = await page.evaluate(() => {
+  //   const name = document.querySelector('.market_listing_item_name');
+  //   var itemName = name.textContent;
+  //   const price = document.querySelectorAll('.normal_price');
+  //   var itemPrice = price[1].textContent;
+  //   return [itemName, itemPrice];
+  // });
+  // itemsName.push(itemData[0]);
+  // itemsPrice.push(itemData[1]);
+
+
+  // const page1 = await browser.newPage();
+  // page1.setDefaultNavigationTimeout(2 * 60 * 1000);
+  // await page1.goto('https://steamcommunity.com/market/search?q=sticker+Legends+paris', { waitUntil: 'domcontentloaded' });
+  // const itemData1 = await page1.evaluate(() => {
+  //   const name = document.querySelector('.market_listing_item_name');
+  //   var itemName = name.textContent;
+  //   const price = document.querySelectorAll('.normal_price');
+  //   var itemPrice = price[1].textContent;
+  //   return [itemName, itemPrice];
+  // });
+  // itemsName.push(itemData1[0]);
+  // itemsPrice.push(itemData1[1]);
+
+
+  // await browser.close();
+  // console.log(itemsName, itemsPrice);
+  // return [itemsName, itemsPrice];
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(2 * 60 * 1000);
   await page.goto('https://steamcommunity.com/market/search?q=sticker+Contenders+paris');
   const itemData = await page.evaluate(() => {
-    const name = document.querySelector('.market_listing_item_name');
-    var itemName = name.textContent;
-    const price = document.querySelectorAll('.normal_price');
-    var itemPrice = price[1].textContent;
+    if(document.querySelector('.market_listing_item_name')){
+      const name = document.querySelector('.market_listing_item_name');
+      var itemName = name.textContent;
+    }
+    if(document.querySelectorAll('.normal_price')){
+      const price = document.querySelectorAll('.normal_price');
+      if(price[1]){
+        var itemPrice = price[1].textContent;
+      }
+    }
     return [itemName, itemPrice];
   });
+  console.log(itemData);
+
   itemsName.push(itemData[0]);
   itemsPrice.push(itemData[1]);
-  const page1 = await browser.newPage();
-  page1.setDefaultNavigationTimeout(2 * 60 * 1000);
-  await page1.goto('https://steamcommunity.com/market/search?q=sticker+Legends+paris');
-  const itemData1 = await page1.evaluate(() => {
-    const name = document.querySelector('.market_listing_item_name');
-    var itemName = name.textContent;
-    const price = document.querySelectorAll('.normal_price');
-    var itemPrice = price[1].textContent;
-    return [itemName, itemPrice];
-  });
-  itemsName.push(itemData1[0]);
-  itemsPrice.push(itemData1[1]);
   await browser.close();
-  console.log(itemsName, itemsPrice);
   return [itemsName, itemsPrice];
 }
 
