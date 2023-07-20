@@ -108,7 +108,7 @@ const workbook = new ExcelJS.Workbook();
 const worksheet = workbook.addWorksheet('Sheet 1');
 worksheet.getCell('B1').value = "Items";
 worksheet.getCell('C1').value = "Prices";
-worksheet.getColumn.width = 5;
+worksheet.getColumn(1).width = 3;
 function myLoop() {
   setTimeout(function () {
     run().then((data) => {
@@ -154,7 +154,7 @@ function myLoop() {
       myLoop();
       index++;
     }
-  }, 20000);
+  }, 12000);
 }
 
 myLoop();
